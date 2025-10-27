@@ -17,6 +17,33 @@ To create all static files needed to run ParFlow, you first need to create a lan
 
 ## Creation of the land-lake-sea-mask
 
+The purpose of this process is to create a land mask that distinguishes between land and water pixels.
+This land mask ensures consistency and allows all model components in TSMP2 to see the same land and water areas.
+
+To create the land mask, we use a variable called `FR_LAND` from `EXTPAR` files.
+A threshold of 0.5 is applied, meaning that if a pixel is covered by less than 50% land, it is considered a pure water pixel.
+Conversely, if a pixel is covered by more or equal 50% land, it is considered a pure land pixel.
+
+Additionally, we differentiate between lake and sea pixels based on the topography.
+Water pixels with a topographic height of zero or less are classified as sea pixels, while those with a topographic height greater than zero are classified as lake pixels.
+However, this classification process introduces some artifacts along the coastline.
+To address these artifacts, we run an optimization loop that checks if lake pixels are neighbors of sea pixels.
+If they are, we treat them as sea pixels as well, ensuring a more accurate representation of the coastline.
+
+It is important to note that COSMO also uses the `FR_LAND` variable as a land-sea mask with also a threshold of 0.5.
+This ensures that all components of TSMP share the same land-sea mask.
+
+Furthermore, special treatment is required due to the coarse horizontal resolution of our target grid.
+Some topographic formations, like the Bosporus connecting the Black Sea and the Mediterranean Sea, cannot be adequately resolved.
+To address this, we modify the original `FR_LAND` variable by setting the value to 0, based on a predefined shape-files containing the coordinates of the Bosporus break through, effectively designating those areas as total water pixels.
+
+Above steps are performed by two scripts located in this directory:
+
+```
+python Breakthrough-Bosporus.py
+python make_land_lake_sea_mask.py
+```
+
 ## Creation of the flow direction and slopes
 
 ## Creation of the mask solids mask
