@@ -1,0 +1,37 @@
+#
+module --force purge
+export PYTHONPATH=""
+#
+module use $OTHERSTAGES
+module load Stages/2025
+module load GCC
+module load ParaStationMPI
+#
+module load Hypre
+module load Silo
+module load Tcl
+#
+module load ecCodes
+module load HDF5
+module load netCDF
+module load netCDF-Fortran
+module load PnetCDF
+module load cURL
+#module load Szip
+module load Python
+#module load NCO
+module load ncview
+module load CMake
+#
+module load netcdf4-python
+module load SciPy-Stack
+module load Cartopy
+module load h5py
+#
+# cd $HOME/.local/share/
+# git clone --recurse-submodules https://github.com/HPSCTerrSys/SLOTH.git
+if [ -d $HOME/.local/share/SLOTH ]; then
+    export PYTHONPATH=$PYTHONPATH:$HOME/.local/share/SLOTH
+fi
+#
+module li
