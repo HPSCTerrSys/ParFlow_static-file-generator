@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 import csv
 import os
@@ -8,7 +9,7 @@ import sloth.mapper
 ###############################################################################
 # THE USER HAS TO CHANGE BELOW ################################################
 ###############################################################################
-EXTPRA_IN  = '../00_DataRaw/EXTPAR/domain202210280000.nc'
+EXTPRA_IN  = '${RAWDATA_DIR}/domain202210280000.nc'
 EXTPRA_OUT = './EUR-11_TSMP_FZJ-IBG3_464x452_EXTPAR.nc'
 # pixel to adjust, as e.g. Bosporus break through
 adjPxIN    = f'./Breakthrough-Bosporus.csv'
