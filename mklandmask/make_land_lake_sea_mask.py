@@ -42,7 +42,7 @@ import matplotlib.pyplot as plt
 ###############################################################################
 # THE USER HAS TO CHANGE BELOW ################################################
 ###############################################################################
-ncGridIN  = f'../01_Grids/EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_gridfile.nc'  # grid file
+ncGridIN  = f'${RAWDATA_DIR}/EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_gridfile.nc'
 ncLsmIN   = f'./EUR-11_TSMP_FZJ-IBG3_464x452_EXTPAR.nc'              # land sea mask file
 ncOUT     = f'./EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc'  # output file
 nboundEXTPAR = 10 # the number of pixels added from griddes to EXTPAR
