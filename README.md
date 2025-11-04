@@ -2,7 +2,9 @@
 
 This repository shows how to generate land masks, slopes, solids and texture indicator for [ParFlow](https://github.com/parflow/parflow) simulations.
 The workflow is taylored to generating files for running ParFlow in the [TSMP2](github.com/HPSCTerrSys/TSMP2) framework (coupled to eCLM), but it may be useful beyond that.
-The generator incorporates steps from [the TSMP1 static file generator](https://gitlab.jsc.fz-juelich.de/detect/detect_z03_z04/constant_fields/TSMP_EUR-11), but it is updated, restructured and rewritten.
+The generator incorporates steps from [the TSMP1 static file generator](https://gitlab.jsc.fz-juelich.de/detect/detect_z03_z04/constant_fields/TSMP_EUR-11), but it is updated, restructured and parts are refactored.
+Instead of including raw input data in this repository, the repo is instead kept small.
+The static-files input data can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
 
 If you are running this generator on a [JSC](https://www.fz-juelich.de/en/ias/jsc) machine, sourcing the provided environment file
 
@@ -13,7 +15,15 @@ source jsc.2025.gnu.psmpi
 makes the necessary utilities and libraries available.
 Otherwise you have to make sure that the respective software is installed or made available on your system.
 
-To create all static files needed to run ParFlow, you first need to create a land mask (`mklandmask/`), then the slopes (`mkslopes/`), the mask solids (`mksolids/`) and the texture indicator (`mktextureindicator/`).
+To create all static files needed to run ParFlow, you first need to download static input files:
+
+```
+RAWDATA_DIR="grids_parflow_cordex-eur-11u"
+git clone https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/${RAWDATA_DIR}.git
+export RAWDATA_DIR="$(realpath $RAWDATA_DIR)"
+```
+
+Then create a land mask (`mklandmask/`), then the slopes (`mkslopes/`), the mask solids (`mksolids/`) and the texture indicator (`mktextureindicator/`) as described in the next sections.
 
 ## Creation of the land-lake-sea-mask
 
@@ -40,8 +50,9 @@ To address this, we modify the original `FR_LAND` variable by setting the value 
 Above steps are performed by two scripts located in this directory:
 
 ```
-python Breakthrough-Bosporus.py
-python make_land_lake_sea_mask.py
+cd mklandmask/
+python3 Breakthrough-Bosporus.py
+python3 make_land_lake_sea_mask.py
 ```
 
 ## Creation of the flow direction and slopes
