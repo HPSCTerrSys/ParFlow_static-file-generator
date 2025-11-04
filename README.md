@@ -4,7 +4,7 @@ This repository shows how to generate land masks, slopes, solids and texture ind
 The workflow is taylored to generating files for running ParFlow in the [TSMP2](github.com/HPSCTerrSys/TSMP2) framework (coupled to eCLM), but it may be useful beyond that.
 The generator incorporates steps from [the TSMP1 static file generator](https://gitlab.jsc.fz-juelich.de/detect/detect_z03_z04/constant_fields/TSMP_EUR-11), but it is updated, restructured and parts are refactored.
 Instead of including raw input data in this repository, the repo is instead kept small.
-The necessary input data can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
+The static-files input data can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
 
 If you are running this generator on a [JSC](https://www.fz-juelich.de/en/ias/jsc) machine, sourcing the provided environment file
 
@@ -19,7 +19,7 @@ To create all static files needed to run ParFlow, you first need to download sta
 
 ```
 RAWDATA_DIR="grids_parflow_cordex-eur-11u"
-git clone git@icg4geo.icg.kfa-juelich.de:ExternalReposPublic/tsmp2-static-files/${RAWDATA_DIR}.git
+git clone https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/${RAWDATA_DIR}.git
 export RAWDATA_DIR="$(realpath $RAWDATA_DIR)"
 ```
 
