@@ -1,0 +1,41 @@
+#!/bin/sh
+# Create D4 ParFlow slope files
+set -e
+
+fil_topo="./HSURFBurnedAndMod.nc"
+gisbase="/p/project1/cdetect/easybuild/jurecadc/software/GRASS/8.4.1-foss-2024a/grass8"
+gisdbase="$(mktemp -d -t pfl-XXXXXX)"
+
+# GRASS GIS extraction setup
+topo_nc=$fil_topo
+location_name="d4_map"
+#grassrc6=(/"GISDBASE: " + gisdbase, "LOCATION_NAME: " + location_name , "MAPSET: PERMANENT"/)
+#...
+
+export PATH="$gisbase/bin:$gisbase/scripts:$PATH"
+export LD_LIBRARY_PATH="$gisbase/lib:$LD_LIBRARY_PATH"
+export PYTHONPATH="$gisbase/etc/python"
+export GRASS_VERSION="8.4.1"
+export GIS_LOCK="$$"
+export tmp="$(mktemp -d -t grass6-XXXXXX)"
+export GISRC="$tmp/gisrc"
+
+# Convert netCDF to GeoTIFF
+# FIXME: HSURFBurnedAndMod.nc does not have geotransform, gcps, or rpcs
+# information included.  This was not preserved in burnShape2Topo.py.
+gdal_translate -a_srs ./WKT-Sphere.txt HSURF.nc HSURF-Sphere.tiff
+gdal_translate -a_srs ./WKT-Sphere.txt HSURFBurnedAndMod.nc HSURFBurnedAndMod-Sphere.tiff
+
+# Use pysheds to calculate the location and direction of the streams, akin to
+# GRASS' r.watershed (sva_static_pfl.ncl)
+module load Python matplotlib
+pip3 install pysheds
+python3 create_pfl_flow_direction.py
+
+# Convert flow direction from GeoTIFF to netCDF
+gdal_translate -a_srs ./WKT-Sphere.txt flow_direction.tiff flow_direction.nc
+gdal_translate -a_srs ./WKT-Sphere.txt slopes.tiff slopes.nc
+#gdal_translate -a_srs ./WKT-Sphere.txt accumulation.tiff accumulation.nc
+#gdal_translate -a_srs ./WKT-Sphere.txt branches.tiff branches.nc
+
+# TODO: better names for output field variables

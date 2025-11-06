@@ -4,7 +4,7 @@ This repository shows how to generate land masks, slopes, solids and texture ind
 The workflow is taylored to generating files for running ParFlow in the [TSMP2](github.com/HPSCTerrSys/TSMP2) framework (coupled to eCLM), but it may be useful beyond that.
 The generator incorporates steps from [the TSMP1 static file generator](https://gitlab.jsc.fz-juelich.de/detect/detect_z03_z04/constant_fields/TSMP_EUR-11), but it is updated, restructured and parts are refactored.
 Instead of including raw input data in this repository, the repo is instead kept small.
-The static-files input data can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
+The input data needed for this generator can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
 
 If you are running this generator on a [JSC](https://www.fz-juelich.de/en/ias/jsc) machine, sourcing the provided environment file
 
@@ -57,7 +57,54 @@ python3 make_land_lake_sea_mask.py
 
 ## Creation of the flow direction and slopes
 
+Using DEMs straight forward to calculate slopes for ParFlow could lead to smaller or bigger problems in river corridor placement.
+In particular for coarse spatial resolutions this is easy to imagine as tight canyons are smoothed out.
+For example a 12km resolution as for the EU11 domain does not see the breakthrough valley [`irongate` for donau river](https://de.wikipedia.org/wiki/Eisernes_Tor) leading to the result, that the donau is flowing around the related mountain range.
+A further example are the Netherlands, where major parts of the land area are below sea level and rivers do not follow the ‘natural’ river-corridor but are forced to follow artificial canals.
+To fix those and other issues / problems the real river-corridors are ‘burned’ to the DEM within this approach.
+
+Burning the correct river corridors is achieved in three steps:
+
+1) `burnShape2Topo.py`  
+The correct river positions are mapped to the target grid (in this case hydroSHEDS data were used) and then river pixels (and neighboring ones) are pushed down within the DEM.
+
+2) `modTopo.py`  
+Some pixels do need extra treatment, as for example the Elbe river in this setup.
+Those need manual adjustment and are corrected ‘pixel-by-pixel’.
+
+3) `sva_static_pfl.ncl`  
+GRASS algorithmus is taken to calculate flow direction and main river streams based on the burned DEM.
+To keep the correct slope values, those are calculated based on the original DEM, but the flow direction, represented by the sign of the slope value, is taken from flow direction calculated by GRASS algorithm.
+
+This way the slope values are in line with the origin DEM, but flow direction is according to the correct river-corridors.
+
+#### Usage
+First extract and adjust the HydroSHEDS river data:
+
+```
+cd ../mkslopes
+wget https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_eu_shp.zip
+wget https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_af_shp.zip
+unzip -u HydroRIVERS_v10_eu_shp.zip
+unzip -u HydroRIVERS_v10_af_shp.zip
+./burnShape2Topo.py
+./modTopo.py
+```
+
+We use [pysheds](https://mattbartos.com/pysheds/) to calculate slopes and flow directions.
+The following script will install and run pysheds.
+pysheds uses XArray as an internal format and reads and writes to disk in GeoTIFF format.
+We wrap around that, converting between netCDF and GeoTIFF.
+
+```
+./create_pfl_slopes
+```
+
 ## Creation of the mask solids mask
 
 ## Creation of the texture indicator
 
+----
+
+This code is under development and its output files are not validated.
+Please use [the prepared ParFlow static files](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/extpar_parflow_cordex-eur-11u) if you just want to run ParFlow on a 12-km CORDEX domain.
