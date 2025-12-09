@@ -6,6 +6,13 @@ The generator incorporates steps from [the TSMP1 static file generator](https://
 Instead of including raw input data in this repository, the repo is instead kept small.
 The input data needed for this generator can be found [here](https://icg4geo.icg.kfa-juelich.de/ExternalReposPublic/tsmp2-static-files/grids_parflow_cordex-eur-11u).
 
+We depend on the [SLOTH helper scripts](https://hpscterrsys.github.io/SLOTH/README.html), which can be installed through
+
+```
+cd $HOME/.local/share/
+git clone --recurse-submodules https://github.com/HPSCTerrSys/SLOTH.git
+```
+
 If you are running this generator on a [JSC](https://www.fz-juelich.de/en/ias/jsc) machine, sourcing the provided environment file
 
 ```
