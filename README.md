@@ -40,12 +40,12 @@ However, this classification process introduces some artifacts along the coastli
 To address these artifacts, we run an optimization loop that checks if lake pixels are neighbors of sea pixels.
 If they are, we treat them as sea pixels as well, ensuring a more accurate representation of the coastline.
 
-It is important to note that COSMO also uses the `FR_LAND` variable as a land-sea mask with also a threshold of 0.5.
+It is important to note that COSMO and ICON also use the `FR_LAND` variable as a land-sea mask with also a threshold of 0.5.
 This ensures that all components of TSMP share the same land-sea mask.
 
 Furthermore, special treatment is required due to the coarse horizontal resolution of our target grid.
 Some topographic formations, like the Bosporus connecting the Black Sea and the Mediterranean Sea, cannot be adequately resolved.
-To address this, we modify the original `FR_LAND` variable by setting the value to 0, based on a predefined shape-files containing the coordinates of the Bosporus break through, effectively designating those areas as total water pixels.
+To address this, we modify the original `FR_LAND` variable by setting the value to 0, based on a predefined shape-files containing the coordinates of the Bosporus breakthrough, effectively designating those areas as total water pixels.
 
 Above steps are performed by two scripts located in this directory:
 
