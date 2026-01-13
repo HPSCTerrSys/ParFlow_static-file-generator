@@ -107,7 +107,31 @@ We wrap around that, converting between netCDF and GeoTIFF.
 ./create_pfl_slopes
 ```
 
-## Creation of the mask solids mask
+## Creation of the mask and solids files
+
+ParFlow requires a "solid file" to distinguish between active and inactive cells in the simulation.
+In this case, active cells represent land areas, while inactive cells represent ocean areas.
+To generate this solid file, we use the land-sea mask that was previously created.
+
+However, it is important to note that we want to preserve lakes in the simulation, as rivers should not disappear when they flow into a lake.
+Therefore, the solid file is created based solely on the presence or absence of ocean areas, without masking out the lakes.
+
+The purpose of the solid file is to inform ParFlow that ocean areas should be treated as inactive cells, meaning they are not considered for computation.
+On the other hand, land areas (including lakes) should be treated as active cells, allowing for proper simulation of water flow and interactions.
+
+#### Usage
+
+Set `PARFLOW_DIR` to your ParFlow installation prefix (the directory that contains ParFlow's `bin`, `lib` and such).
+In the mask and solid files creation below, we exemplified this by assuming you are using the TSMP2 framework on JURECA:
+
+```
+./createPfbMask.py
+export PARFLOW_DIR="$TSMP2_DIR/bin/JURECADC_ParFlow" # modify to install prefix
+$PARFLOW_DIR/bin/pfmask-to-pfsol --z-top 30 --z-bottom 0 --mask PfbMask4SolidFile.pfb --pfsol PfbMask4SolidFile.pfsol >PfbMask4SolidFile.log
+```
+
+You have to choose the value for `--z-top` according to `ComputationalGrid.DZ * ComputationalGrid.NZ`.
+In the case of EUR-11 this comes down to $$z_\textrm{bottom} = 2 \cdot 15$$.
 
 ## Creation of the texture indicator
 
