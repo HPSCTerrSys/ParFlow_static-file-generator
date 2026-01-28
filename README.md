@@ -125,6 +125,7 @@ Set `PARFLOW_DIR` to your ParFlow installation prefix (the directory that contai
 In the mask and solid files creation below, we exemplified this by assuming you are using the TSMP2 framework on JURECA:
 
 ```
+cd ../mksolids
 ./createPfbMask.py
 export PARFLOW_DIR="$TSMP2_DIR/bin/JURECADC_ParFlow" # modify to install prefix
 $PARFLOW_DIR/bin/pfmask-to-pfsol --z-top 30 --z-bottom 0 --mask PfbMask4SolidFile.pfb --pfsol PfbMask4SolidFile.pfsol >PfbMask4SolidFile.log
