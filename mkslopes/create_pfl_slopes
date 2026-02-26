@@ -6,5 +6,5 @@ topo_nc="./HSURFBurnedAndMod.nc"
 
 # Use PriorityFlow to calculate the slopes, akin to
 # GRASS' r.watershed (sva_static_pfl.ncl)
-Rscript create_pfl_slopes.R
+Rscript create_pfl_slopes.R ${topo_nc}
 
