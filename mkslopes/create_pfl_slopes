@@ -2,9 +2,10 @@
 # Create D4 ParFlow slope files
 set -e
 
-topo_nc="./HSURFBurnedAndMod.nc"
+topo_nc="./HSURFBurned.nc" #AndMod
+mask_nc="/p/scratch/cdetect/vanhulten1/testing/TSMP_EUR-11.25A07/static.resource/03_LandLakeSeaMask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc"
 
 # Use PriorityFlow to calculate the slopes, akin to
 # GRASS' r.watershed (sva_static_pfl.ncl)
-Rscript create_pfl_slopes.R ${topo_nc}
+Rscript create_pfl_slopes.R ${topo_nc} ${mask_nc}
 

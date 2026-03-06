@@ -1,24 +1,42 @@
 #!/usr/bin/env R
 # Create D4 ParFlow slope files
 
-topo_nc <- paste0(args[1])
+topo_nc <- args
+mask_nc <- args
 
+# Install PriorityFlow
 # On JSC HPC 'remotes' is already included in the R module
 if (!requireNamespace("remotes", quietly=TRUE)) install.packages('remotes')
 library(remotes)
 install_github("lecondon/PriorityFlow", subdir="Rpkg")
 
 # Install packages that are dependencies but not described as such by PriorityFlow
-install.packages('fields')
+install.packages('fields', repos="https://ftp.fau.de/cran/")
 
 # Use the PriorityFlow package to calculate slopes
-# TODO: complete and correct arguments!
 library('PriorityFlow')
-PriorityFlow::SlopeCalcUP(
-            dem = topo_nc,
-            direction = , # e.g. flow_direction.{tiff,nc} from pysheds routine
-            dx = 0.11, dy = 0.11,
-            mask = "../mklandmask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc",
-            borders = ,
-            rivermask = # e.g. RiverMask.nc created by burnShape2Topo.py
-)
+
+# netCDF support; part of R-bundle-CRAN/2025.11
+library('terra')
+
+llsm <- rast(mask_nc)
+llsm[llsm==2] <- 1  # treat lakes as land
+lsm_df <- data.frame(llsm)
+lsm_matrix = data.matrix(lsm_df)
+lsm_shaped = matrix(lsm_matrix, nrow=444)
+hsurf <- rast(topo_nc)
+hsurf_df <- data.frame(hsurf)
+hsurf_matrix <- data.matrix(hsurf_df)
+hsurf_shaped <- matrix(hsurf_matrix, nrow=444)
+zero_matrix <- array( 0, dim(hsurf_shaped) )
+
+# Calculate slopes; ParFlow needs SlopeCalcUP()
+slope = PriorityFlow::SlopeCalStan( dem=hsurf_shaped, direction=zero_matrix,
+                                    dx=12500, dy=12500, mask=lsm_shaped )
+#image(slope$slopex)
+#dev.off()
+
+slopex_rast <- rast( slope$slopex )
+slopey_rast <- rast( slope$slopey )
+slope_dataset <- sds(slopex_rast, slopey_rast)
+writeCDF(slope_rast, filename="slopes-out.nc", varname=slope_dataset)
