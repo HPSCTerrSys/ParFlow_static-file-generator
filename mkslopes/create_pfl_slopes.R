@@ -1,14 +1,17 @@
 #!/usr/bin/env R
 # Create D4 ParFlow slope files
 
-topo_nc <- args
-mask_nc <- args
+if (!interactive()) {
+    args <- commandArgs(trailingOnly = TRUE)
+    topo_nc <- args
+    mask_nc <- args
+}
 
 # Install PriorityFlow
 # On JSC HPC 'remotes' is already included in the R module
 if (!requireNamespace("remotes", quietly=TRUE)) install.packages('remotes')
 library(remotes)
-install_github("lecondon/PriorityFlow", subdir="Rpkg")
+install_github("lecondon/PriorityFlow", subdir="Rpkg", quiet=TRUE)
 
 # Install packages that are dependencies but not described as such by PriorityFlow
 if (!requireNamespace("fields", quietly=TRUE)) install.packages('fields', repos="https://ftp.fau.de/cran/")

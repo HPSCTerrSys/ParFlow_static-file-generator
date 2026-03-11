@@ -9,3 +9,5 @@ mask_nc="/p/scratch/cdetect/vanhulten1/testing/TSMP_EUR-11.25A07/static.resource
 # GRASS' r.watershed (sva_static_pfl.ncl)
 Rscript create_pfl_slopes.R ${topo_nc} ${mask_nc}
 
+# Convert to simple ASCII for ParFlow
+./netCDF2simpleASCII.py slopes-out
