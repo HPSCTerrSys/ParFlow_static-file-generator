@@ -59,6 +59,7 @@ Above steps are performed by two scripts located in this directory:
 
 ```
 cd mklandmask/
+pip3 install geopandas
 python3 Breakthrough-Bosporus.py
 python3 make_land_lake_sea_mask.py
 ```
