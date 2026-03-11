@@ -11,7 +11,7 @@ library(remotes)
 install_github("lecondon/PriorityFlow", subdir="Rpkg")
 
 # Install packages that are dependencies but not described as such by PriorityFlow
-install.packages('fields', repos="https://ftp.fau.de/cran/")
+if (!requireNamespace("fields", quietly=TRUE)) install.packages('fields', repos="https://ftp.fau.de/cran/")
 
 # Use the PriorityFlow package to calculate slopes
 library('PriorityFlow')
@@ -39,4 +39,5 @@ slope = PriorityFlow::SlopeCalStan( dem=hsurf_shaped, direction=zero_matrix,
 slopex_rast <- rast( slope$slopex )
 slopey_rast <- rast( slope$slopey )
 slope_dataset <- sds(slopex_rast, slopey_rast)
-writeCDF(slope_rast, filename="slopes-out.nc", varname=slope_dataset)
+varnames(slope_dataset) <- c("slopex", "slopey")
+writeCDF(slope_dataset, filename="slopes-out.nc")
