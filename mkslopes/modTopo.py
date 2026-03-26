@@ -20,9 +20,9 @@ import netCDF4 as nc
 import sys
 import os
 import csv
-import fiona
 from shapely.geometry import shape
 import sloth.mapper
+import datetime
 
 ###############################################################################
 #### START OF: stuff you need to adjust!
@@ -32,12 +32,20 @@ with nc.Dataset(f'./HSURFBurned.nc', 'r') as nc_file:
     HSURFin = nc_file.variables['HSURFBurned'][...]
     lon2D   = nc_file.variables['lon'][...]
     lat2D   = nc_file.variables['lat'][...]
-# file to save adjusted topo to
-nc_file      = nc.Dataset(f'./HSURFBurnedAndMod.nc', 'w')
-latDim       = nc_file.createDimension('lat',HSURFin.shape[0])
-lonDim       = nc_file.createDimension('lon',HSURFin.shape[1])
-out_HSURF    = nc_file.createVariable(f'HSURFBurnedAndMod','f8',('lat','lon'),
-                                           zlib=True)
+
+rawdata_dir = os.environ['RAWDATA_DIR']
+griddesFileName = f'{rawdata_dir}/EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_griddes.txt'
+
+netCDFFileName_HSURFBurnedAndMod = sloth.IO.createNetCDF('./HSURFBurnedAndMod.nc',
+        domain=griddesFileName,
+        calcLatLon=True,
+        author='Marco VAN HULTEN',
+        contact='Marco.van.Hulten@uni-bonn.de',
+        institution='Uni Bonn',
+        history=f'Created: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}',
+        description='HSURF with major rivers burnt and certain pixels modified',
+        source='')
+
 # pixel to adjust
 # Read in vertices of regions to adjust
 with open("./BurnRiversAndCanyons_Vertices_EUR11.csv", "r") as f:
@@ -55,9 +63,6 @@ with open("./BurnRiversAndCanyons_Vertices_EUR11.csv", "r") as f:
         ToAdjust[regionID]['lat'].append(float(line[3]))
 
 # Initialize mapper from SLOTH
-#Mapper = sloth.mapper.mapper(SimLons=lon2D, SimLats=lat2D,
-#                            ObsLons=pointLons, ObsLats=pointLats,
-#                            ObsIDs=pointIDs)
 Mapper = sloth.mapper.mapper(SimLons=lon2D, SimLats=lat2D)
 for regionID in ToAdjust.keys():
     Mapper.ObsLons = np.array(ToAdjust[regionID]['lon'])
@@ -91,6 +96,12 @@ for regionID in ToAdjust:
         print(f'handling: {Plat} | {Plon}')
         tmp_out_HSURF[Plat, Plon] = tmp_out_HSURF[LATref,LONref]
 
-out_HSURF[...] = tmp_out_HSURF[...]
-nc_file.close()
-
+# write results to netCDF object
+with nc.Dataset(netCDFFileName_HSURFBurnedAndMod, 'a') as nc_file:
+    nc_HSURFBurnedAndMod = nc_file.createVariable('HSURFBurnedAndMod', 'f8', ('rlat', 'rlon'), zlib=True)
+    nc_HSURFBurnedAndMod.standard_name = "HSURFBurnedAndMod"
+    nc_HSURFBurnedAndMod.long_name = "HSURFBurnedAndMod"
+    nc_HSURFBurnedAndMod.units = "m"
+    nc_HSURFBurnedAndMod.coordinates = "lon lat"
+    nc_HSURFBurnedAndMod.grid_mapping = "rotated_pole"
+    nc_HSURFBurnedAndMod[...] = tmp_out_HSURF
