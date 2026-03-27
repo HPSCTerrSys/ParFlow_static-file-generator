@@ -80,8 +80,8 @@ The correct river positions are mapped to the target grid (in this case hydroSHE
 Some pixels do need extra treatment, as for example the Elbe river in this setup.
 Those need manual adjustment and are corrected ‘pixel-by-pixel’.
 
-3) `sva_static_pfl.ncl`  
-GRASS algorithmus is taken to calculate flow direction and main river streams based on the burned DEM.
+3) `create_pfl_slopes`
+The R package *PriorityFlow* is used to calculate flow direction and main river streams based on the burned DEM.
 To keep the correct slope values, those are calculated based on the original DEM, but the flow direction, represented by the sign of the slope value, is taken from flow direction calculated by GRASS algorithm.
 
 This way the slope values are in line with the origin DEM, but flow direction is according to the correct river-corridors.

@@ -3,8 +3,8 @@
 
 if (!interactive()) {
     args <- commandArgs(trailingOnly = TRUE)
-    topo_nc <- args
-    mask_nc <- args
+    topo_nc <- args[1]
+    mask_nc <- args[2]
 }
 
 # Install PriorityFlow
@@ -36,11 +36,9 @@ zero_matrix <- array( 0, dim(hsurf_shaped) )
 # Calculate slopes; ParFlow needs SlopeCalcUP()
 slope = PriorityFlow::SlopeCalStan( dem=hsurf_shaped, direction=zero_matrix,
                                     dx=12500, dy=12500, mask=lsm_shaped )
-#image(slope$slopex)
-#dev.off()
 
-slopex_rast <- rast( slope$slopex )
-slopey_rast <- rast( slope$slopey )
+slopex_rast <- rast( t( slope$slopex ) )
+slopey_rast <- rast( t( slope$slopey ) )
 slope_dataset <- sds(slopex_rast, slopey_rast)
 varnames(slope_dataset) <- c("slopex", "slopey")
-writeCDF(slope_dataset, filename="slopes-out.nc")
+writeCDF(slope_dataset, filename="slopes.nc")
