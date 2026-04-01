@@ -2,12 +2,25 @@
 # Create D4 ParFlow slope files
 set -e
 
-topo_nc="./HSURFBurned.nc" #AndMod
+topo_nc="./HSURFBurnedAndMod.nc"
 mask_nc="/p/scratch/cdetect/vanhulten1/testing/TSMP_EUR-11.25A07/static.resource/03_LandLakeSeaMask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc"
+
+# Convert netCDF to GeoTIFF
+gdal_translate -a_srs ./WKT-Sphere.txt HSURF.nc HSURF-Sphere.tiff
+gdal_translate -a_srs ./WKT-Sphere.txt HSURFBurnedAndMod.nc HSURFBurnedAndMod-Sphere.tiff
+
+# Use pysheds to fill pitts
+#module load Python matplotlib
+pip3 install pysheds
+python3 fill_pits.py
+
+# Convert from GeoTIFF to netCDF
+#gdal_translate -a_srs ./WKT-Sphere.txt flow_direction.tiff flow_direction.nc
+gdal_translate -a_srs ./WKT-Sphere.txt pit-filled_dem.tiff pit-filled_dem.nc
 
 # Use PriorityFlow to calculate the slopes, akin to
 # GRASS' r.watershed (sva_static_pfl.ncl)
-Rscript create_pfl_slopes.R ${topo_nc} ${mask_nc}
+Rscript create_pfl_slopes.R "pit-filled_dem.nc" ${mask_nc}
 
 # Convert to simple ASCII for ParFlow
-./netCDF2simpleASCII.py slopes-out
+./netCDF2simpleASCII.py slopes slopex

@@ -29,6 +29,7 @@ module load Cartopy
 module load h5py
 module load R
 module load R-bundle-CRAN/2025.11
+module load GDAL
 #
 # cd $HOME/.local/share/
 # git clone --recurse-submodules https://github.com/HPSCTerrSys/SLOTH.git

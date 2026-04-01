@@ -8,8 +8,6 @@ try:
 except IndexError:
     sys.exit(f"File and variable names needed: '{sys.argv[0]} FILE VARIABLE'")
 
-print(sa_file)
-
 try:
     vname = sys.argv[2]
 except IndexError:

@@ -82,8 +82,10 @@ Those need manual adjustment and are corrected ‘pixel-by-pixel’.
 
 3) `create_pfl_slopes`
 The R package *PriorityFlow* is used to calculate flow direction and main river streams based on the burned DEM.
-To keep the correct slope values, those are calculated based on the original DEM, but the flow direction, represented by the sign of the slope value, is taken from flow direction calculated by GRASS algorithm.
+There are several other tools available, a couple of them also doing D4 slopes.
+For slopes we use PriorityFlow, as [recommended by Reed Maxwell](https://github.com/parflow/parflow/issues/696#issuecomment-3920959452) who authored ParFlow and this tool.
 
+To keep the correct slope values, those are calculated based on the original DEM, but the flow direction, represented by the sign of the slope value, is taken from flow direction calculated by pysheds.
 This way the slope values are in line with the origin DEM, but flow direction is according to the correct river-corridors.
 
 #### Usage
@@ -99,14 +101,16 @@ unzip -u HydroRIVERS_v10_af_shp.zip
 ./modTopo.py
 ```
 
-We use [pysheds](https://mattbartos.com/pysheds/) to calculate slopes and flow directions.
-The following script will install and run pysheds.
-pysheds uses XArray as an internal format and reads and writes to disk in GeoTIFF format.
-We wrap around that, converting between netCDF and GeoTIFF.
+We use [pysheds](https://mattbartos.com/pysheds/) for pit filling, flooding depressions and resolving flats.
+We use [PriorityFlow](https://github.com/lecondon/PriorityFlow) to calculate the D4 slopes.
+The following script will install and run pysheds and PriorityFlow:
 
 ```
 ./create_pfl_slopes
 ```
+
+pysheds uses XArray as an internal format and reads and writes to disk in GeoTIFF format.
+We wrap around that by converting between netCDF and GeoTIFF.
 
 ## Creation of the mask and solids files
 
