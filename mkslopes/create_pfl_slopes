@@ -3,7 +3,7 @@
 set -e
 
 topo_nc="./HSURFBurnedAndMod.nc"
-mask_nc="/p/scratch/cdetect/vanhulten1/testing/TSMP_EUR-11.25A07/static.resource/03_LandLakeSeaMask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc"
+mask_nc="../mklandmask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc"
 
 # Convert netCDF to GeoTIFF
 gdal_translate -a_srs ./WKT-Sphere.txt HSURF.nc HSURF-Sphere.tiff
