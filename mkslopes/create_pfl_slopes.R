@@ -27,6 +27,7 @@ llsm[llsm==2] <- 1  # treat lakes as land
 lsm_df <- data.frame(llsm)
 lsm_matrix = data.matrix(lsm_df)
 lsm_shaped = matrix(lsm_matrix, nrow=444)
+lsm_shaped = lsm_shaped[,432:1]  # up and down must be flipped
 hsurf <- rast(topo_nc)
 hsurf_df <- data.frame(hsurf)
 hsurf_matrix <- data.matrix(hsurf_df)
