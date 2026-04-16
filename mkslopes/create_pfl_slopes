@@ -4,15 +4,15 @@ set -e
 
 topo_nc="./HSURFBurnedAndMod.nc"
 mask_nc="../mklandmask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc"
+topo_tiff="HSURF-Sphere.tiff"
 
 # Convert netCDF to GeoTIFF
-gdal_translate -a_srs ./WKT-Sphere.txt HSURF.nc HSURF-Sphere.tiff
-gdal_translate -a_srs ./WKT-Sphere.txt HSURFBurnedAndMod.nc HSURFBurnedAndMod-Sphere.tiff
+gdal_translate -a_srs ./WKT-Sphere.txt $topo_nc $topo_tiff
 
 # Use pysheds to fill pitts
 #module load Python matplotlib
 pip3 install pysheds
-python3 fill_pits.py
+python3 fill_pits.py $topo_tiff
 
 # Convert from GeoTIFF to netCDF
 #gdal_translate -a_srs ./WKT-Sphere.txt flow_direction.tiff flow_direction.nc
