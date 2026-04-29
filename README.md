@@ -21,6 +21,7 @@ source jsc.2025.gnu.psmpi
 
 makes the necessary utilities and libraries available.
 Otherwise you have to make sure that the respective software is installed or made available on your system.
+On OpenBSD you need the packages `curl cmake eccodes gcc hdf5 ncview netcdf openmpi py3-{gdal,geopandas,h5py,matplotlib,netcdf4,scipy,xarray} tcl-8.6`.
 
 To create all static files needed to run ParFlow, you first need to download static input files:
 
