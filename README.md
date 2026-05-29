@@ -98,6 +98,34 @@ unzip -u HydroRIVERS_v10_af_shp.zip
 ./modTopo.py
 ```
 
+#### Optional / to be tested / unsure whether pysheds is needed
+To keep the correct slope values, those are calculated based on the original DEM, but the flow direction, represented by the sign of the slope value, is taken from flow direction calculated by pysheds.
+This way the slope values are in line with the origin DEM, but flow direction is according to the correct river-corridors.
+
+We use [pysheds](https://mattbartos.com/pysheds/) for pit filling, flooding depressions and resolving flats.
+We use [PriorityFlow](https://github.com/lecondon/PriorityFlow) to calculate the D4 slopes.
+The following script will install and run pysheds and PriorityFlow:
+
+```
+./create_pfl_slopes
+```
+
+pysheds uses XArray as an internal format and reads and writes to disk in GeoTIFF format.
+We wrap around that by converting between netCDF and GeoTIFF.
+
+#### Usage of priority\_flow for calculating slopes
+
+```
+mkdir data
+pip3 install priority_flow
+./create_pfl_slopes.py
+```
+
+**N.B. Even though this can create D4 slopes, they are untested and may not be useful with ParFlow.
+Further development and testing of the slopes generation is needed.
+If you want to run TSPM2 with ParFlow, you may create the land mask, solids and textures with this generator, but for slopes it is probably best to rely on 
+[the existing slopes](https://gitlab.jsc.fz-juelich.de/detect/detect_z03_z04/constant_fields/TSMP_EUR-11/-/tree/main/static/parflow).**
+
 ## Creation of the mask solids mask
 
 ## Creation of the texture indicator
