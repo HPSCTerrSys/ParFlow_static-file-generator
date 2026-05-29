@@ -66,6 +66,38 @@ python3 make_land_lake_sea_mask.py
 
 ## Creation of the flow direction and slopes
 
+Using DEMs straight forward to calculate slopes for ParFlow could lead to smaller or bigger problems in river corridor placement.
+In particular for coarse spatial resolutions this is easy to imagine as tight canyons are smoothed out.
+For example a 12km resolution as for the EU11 domain does not see the breakthrough valley [`irongate` for donau river](https://de.wikipedia.org/wiki/Eisernes_Tor) leading to the result, that the donau is flowing around the related mountain range.
+A further example are the Netherlands, where major parts of the land area are below sea level and rivers do not follow the ‘natural’ river-corridor but are forced to follow artificial canals.
+To fix those and other issues / problems the real river-corridors are ‘burned’ to the DEM within this approach.
+
+Burning the correct river corridors is achieved in two steps:
+
+1) `burnShape2Topo.py`  
+The correct river positions are mapped to the target grid (in this case hydroSHEDS data were used) and then river pixels (and neighboring ones) are pushed down within the DEM.
+
+2) `modTopo.py`  
+Some pixels do need extra treatment, as for example the Elbe river in this setup.
+Those need manual adjustment and are corrected ‘pixel-by-pixel’.
+
+The Python package *priority\_flow* is used to calculate flow direction and main river streams based on the burned DEM.
+There are several other tools available, a couple of them also doing D4 slopes.
+ParFlow author Reed Maxwell [recommended](https://github.com/parflow/parflow/issues/696#issuecomment-3920959452) to use [PriorityFlow](https://github.com/lecondon/PriorityFlow), which was since ported to Python as [priority\_flow](https://github.com/hydroframe/priority_flow), which we will use here.
+
+#### Usage
+First extract and adjust the HydroSHEDS river data:
+
+```
+cd ../mkslopes
+wget https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_eu_shp.zip
+wget https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_af_shp.zip
+unzip -u HydroRIVERS_v10_eu_shp.zip
+unzip -u HydroRIVERS_v10_af_shp.zip
+./burnShape2Topo.py
+./modTopo.py
+```
+
 ## Creation of the mask solids mask
 
 ## Creation of the texture indicator
