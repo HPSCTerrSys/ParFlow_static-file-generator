@@ -3,7 +3,7 @@ module --force purge
 export PYTHONPATH=""
 #
 module use $OTHERSTAGES
-module load Stages/2025
+module load Stages/2026
 module load GCC
 module load ParaStationMPI
 #
@@ -20,13 +20,16 @@ module load cURL
 #module load Szip
 module load Python
 #module load NCO
-module load ncview
+#module load ncview
 module load CMake
 #
 module load netcdf4-python
 module load SciPy-Stack
 module load Cartopy
 module load h5py
+module load R
+module load R-bundle-CRAN/2025.11
+module load GDAL
 #
 # cd $HOME/.local/share/
 # git clone --recurse-submodules https://github.com/HPSCTerrSys/SLOTH.git

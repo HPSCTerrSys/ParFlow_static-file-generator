@@ -1,0 +1,40 @@
+# ignore big data formats as
+*.tif
+*.tiff
+*.nc
+*.hdf
+*.sa
+*.pfb
+*.pfsol
+*.gdb
+*.zip
+*.tar
+
+# ignore shape files
+*.shp
+*.cpg
+*.dbf
+*.prj
+*.shx
+
+# ignore images
+*.png
+*.jpeg
+*.pdf
+
+# ignore swap files
+*.swp
+
+# ignore error / log files
+*.log
+*.LOG
+*err.*
+*out.*
+**/nohup.out
+
+# ignore compiled files
+*.pyc
+*.so
+
+# ignore MANIFEST
+*MANIFEST*
