@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import sloth.IO 
+import sloth.IO
 
 LLSMFileName = '../mklandmask/EUR-11_TSMP_FZJ-IBG3_444x432_LAND-LAKE-SEA-MASK.nc'
 LLSMVarName  = 'LLSM'
